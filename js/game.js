@@ -1,63 +1,187 @@
-var config = {
+const config = {
     type: Phaser.AUTO,
-    width: WIDTH,
-    height: HEIGHT,
-    parent: 'game',
-    scene: {
-      preload: preload,
-      create: create,
-      update: update,
-    },
+    parent: 'phaser-example',
+    backgroundColor: '#ffffff',
     physics: {
-      default: 'matter',
-      matter: {
-        gravity: {
-          y: 0,
+        default: 'matter',
+        matter: {
+          gravity: {
+            y: 0,
+          },
+          debug: true,
         },
-        debug: false,
       },
-    },
-  };
-  
-  
-  var game = new Phaser.Game(config);
-var _scene;
-var game_width, game_height;
-
-  
-function create ()
-    {
-        _scene = this;
-        game_width = _scene.game.config.width;
-        game_height = _scene.game.config.height;
-        walls = this.add.sprite(0, 0,'walls').setOrigin(0);
-       // this.physics.world.enable([ walls ]);
-       player = _scene.matter.add.sprite(0,0, 'player');
-       player.setOrigin(0.5).setScale(.8);
-       player.body.collideWorldBounds = true;
-       player.body.label = 'player';
-       
-       setUpArrows();
-
+    scene: {
+        preload: preload,
+        create: create,
+        update: update,
     }
+};
 
-    function update ()
-    {
-    }
+const game = new Phaser.Game(config);
+const game_height = game.config.height;
+const game_width = game.config.width;
+function create() {
+    objectData = this.cache.json.get('levelData');
+    this.cursors = this.input.keyboard.createCursorKeys();
+    polygons = this.add.group()
+    wallData = objectData['walls'];
+    gateData = objectData['gates'];
+    cat1 = this.matter.world.nextCategory();
+    buildWalls(this);
+    buildGates(this);
+    this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
+    //gates = this.physics.add.image(0, 0, 'gates').setOrigin(0).setScale(1.5).setImmovable();
+    titleText = this.add.text(620, 0, RULES_TEXT,
+        {
+            fontFamily: 'Arial', fontSize: 32, color: '#00',
+            wordWrap: { width: 250},
+        })
+    scoreText = this.add.text(620, 160, 'SCORE: 0',
+        {
+            fontFamily: 'Arial', fontSize: 32, color: '#00',
+            wordWrap: { width: 250},
+        })
+    highScoreText = this.add.text(620, 200, 'HIGH SCORE: 0',
+        {
+            fontFamily: 'Arial', fontSize: 32, color: '#00',
+            wordWrap: { width: 250},
+        })
+    timerText = this.add.text(620, 240, 'TIMER: 0',
+        {
+            fontFamily: 'Arial', fontSize: 32, color: '#00',
+            wordWrap: { width: 175},
+        })
+    player = this.matter.add.sprite(50, 550, 'player');
+    player.setCollisionCategory(cat1);
 
-    function setUpArrows(){
-        var y = game_height-10;
-        for (let index = 0; index < arrows.length; index++) {
-         var arrow = arrowStats[index];
-         arrows[index] = _scene.add.image(0,0,'arrow');
-         arrows[index].setOrigin(0.5).setScale(.25);
-         arrows[index].xOffset = arrow.xOffset;  
-         arrows[index].yOffSet = arrow.yOffset;  
-          arrows[index].x = 60+arrows[index].game_width*.25+40+arrow.xOffset;
-          arrows[index].y = y- arrows[index].game_width*.25+arrow.yOffset;
-          arrows[index].name= arrow.direction;
-          arrows[index].setInteractive();
-         arrows[index].angle =arrow.angle;  
-        }
+
+    setUpArrows(this);
+
+}
+
+function buildWalls(scene){
+    wallBkgd = scene.add.sprite(0, 0, 'walls');
+    wallBkgd.setOrigin(0);
+    wallBkgd.setDisplaySize(
+      600,
+      600,
+    );
+    for (let index = 0; index < wallData.length; index++) {
+      var vertices = wallData[index].shape;
+      let polyObject = [];
+      for (let i = 0; i < vertices.length / 2; i++) {
+        polyObject.push({
+          x: vertices[i * 2],
+          y: vertices[i * 2 + 1],
+        });
       }
-      
+  
+      let centre = Phaser.Physics.Matter.Matter.Vertices.centre(polyObject);
+      var verts = scene.matter.verts.fromPath(vertices.join(' '));
+      for (let i = 0; i < verts.length; i++) {
+        (verts[i].x -= centre.x) * -1 * xScale ;
+        (verts[i].y -= centre.y) * -1 * yScale;
+      }
+      var poly = scene.add.polygon(
+        centre.x * xScale,
+        centre.y * yScale,
+        verts,
+        0x0000ff, 0,
+      );
+      var objBody = scene.matter.add
+        .gameObject(
+          poly, {
+            shape: {
+              type: 'fromVerts',
+              verts,
+              flagInternal: true,
+            },
+          })
+        .setStatic(true)
+        .setOrigin(0);
+      objBody.body.label = 'obstacle';
+      objBody.setCollisionCategory(cat1);
+      polygons.add(poly);
+      wallBkgd.setDepth(0);   
+      }
+}
+function buildGates(scene){
+    gateBkgd = scene.add.sprite(0, 0, 'gates');
+    gateBkgd.setOrigin(0);
+    gateBkgd.setDisplaySize(
+      600,
+      600,
+    );
+    for (let index = 0; index < gateData.length; index++) {
+      var vertices = gateData[index].shape;
+      let polyObject = [];
+      for (let i = 0; i < vertices.length / 2; i++) {
+        polyObject.push({
+          x: vertices[i * 2],
+          y: vertices[i * 2 + 1],
+        });
+      }
+  
+      let centre = Phaser.Physics.Matter.Matter.Vertices.centre(polyObject);
+      var verts = scene.matter.verts.fromPath(vertices.join(' '));
+      for (let i = 0; i < verts.length; i++) {
+        (verts[i].x -= centre.x) * -1 * xScale ;
+        (verts[i].y -= centre.y) * -1 * yScale;
+      }
+      var poly = scene.add.polygon(
+        centre.x * xScale,
+        centre.y * yScale,
+        verts,
+        0x0000ff, 0,
+      );
+      var objBody = scene.matter.add
+        .gameObject(
+          poly, {
+            shape: {
+              type: 'fromVerts',
+              verts,
+              flagInternal: true,
+            },
+          })
+        .setStatic(true)
+        .setOrigin(0);
+      objBody.body.label = 'obstacle';
+      objBody.setCollisionCategory(cat1);
+      polygons.add(poly);
+      gateBkgd.setDepth(0);   
+      }
+}
+function update() {
+    player.setVelocity(0);
+
+    if (this.cursors.left.isDown) {
+        player.setVelocityX(-1);
+    }
+    else if (this.cursors.right.isDown) {
+        player.setVelocityX(1);
+    }
+
+    if (this.cursors.up.isDown) {
+        player.setVelocityY(-1);
+    }
+    else if (this.cursors.down.isDown) {
+        player.setVelocityY(1);
+    }
+}
+
+function setUpArrows(scene) {
+    var y = game_height - 10;
+    for (let index = 0; index < arrows.length; index++) {
+        var arrow = arrowStats[index];
+        arrows[index] = scene.add.image(0, 0, 'arrow');
+        arrows[index].setOrigin(0.5);
+        arrows[index].xOffset = arrow.xOffset;
+        arrows[index].yOffSet = arrow.yOffset;
+        arrows[index].x = game_width * arrow.xOffset;
+        arrows[index].y = game_height * arrow.yOffset;
+        arrows[index].name = arrow.direction;
+        arrows[index].setInteractive();
+        arrows[index].angle = arrow.angle;
+    }
+}
