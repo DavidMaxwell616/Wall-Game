@@ -65,6 +65,7 @@ var hiScoreText;
 var timerText;
 var timerValue=0;
 var cat1;
+var cat2;
 var wallData;
 var wallBkgd;
 var polygons;

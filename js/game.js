@@ -28,10 +28,10 @@ function create() {
     wallData = objectData['walls'];
     gateData = objectData['gates'];
     cat1 = this.matter.world.nextCategory();
+    cat2 = this.matter.world.nextCategory();
     buildWalls(this);
     buildGates(this);
     this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
-    //gates = this.physics.add.image(0, 0, 'gates').setOrigin(0).setScale(1.5).setImmovable();
     titleText = this.add.text(620, 0, RULES_TEXT,
         {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
@@ -52,10 +52,10 @@ function create() {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
             wordWrap: { width: 175},
         })
-    player = this.matter.add.sprite(50, 550, 'player');
+    player = this.matter.add.sprite(50, 550, 'player').setScale(.8).setAngle(45);
     player.setCollisionCategory(cat1);
-
-
+    player.body.label = 'player';
+    this.matter.world.on('collisionstart', handleCollision);
     setUpArrows(this);
 
 }
@@ -100,7 +100,7 @@ function buildWalls(scene){
           })
         .setStatic(true)
         .setOrigin(0);
-      objBody.body.label = 'obstacle';
+      objBody.body.label = 'wall';
       objBody.setCollisionCategory(cat1);
       polygons.add(poly);
       wallBkgd.setDepth(0);   
@@ -146,11 +146,28 @@ function buildGates(scene){
           })
         .setStatic(true)
         .setOrigin(0);
-      objBody.body.label = 'obstacle';
-      objBody.setCollisionCategory(cat1);
+      objBody.body.label = 'gate';
+      objBody.setCollisionCategory(cat2);
       polygons.add(poly);
       gateBkgd.setDepth(0);   
       }
+}
+function handleCollision(event){
+  for (var i = 0; i < event.pairs.length; i++) {
+    var bodyA = getRootBody(event.pairs[i].bodyA);
+    var bodyB = getRootBody(event.pairs[i].bodyB);
+    console.log(bodyA);
+    console.log(bodyB);
+  }
+}
+function getRootBody(body) {
+  if (body.parent === body) {
+    return body;
+  }
+  while (body.parent !== body) {
+    body = body.parent;
+  }
+  return body;
 }
 function update() {
     player.setVelocity(0);
