@@ -144,10 +144,11 @@ function buildGates(scene){
               flagInternal: true,
             },
           })
+        .setSensor(true)
         .setStatic(true)
         .setOrigin(0);
-      objBody.body.label = 'gate';
-      objBody.setCollisionCategory(cat2);
+      objBody.body.label = 'gates';
+//      objBody.setCollisionCategory(cat2);
       polygons.add(poly);
       gateBkgd.setDepth(0);   
       }
@@ -156,8 +157,12 @@ function handleCollision(event){
   for (var i = 0; i < event.pairs.length; i++) {
     var bodyA = getRootBody(event.pairs[i].bodyA);
     var bodyB = getRootBody(event.pairs[i].bodyB);
-    console.log(bodyA);
-    console.log(bodyB);
+    if (bodyA.label == 'player' && bodyB.label == 'gates'
+      || bodyB.label == 'player' && bodyA.label == 'gates')
+      {
+console.log('hit gate');
+        return;
+      }
   }
 }
 function getRootBody(body) {
