@@ -21,6 +21,7 @@ const config = {
 const game = new Phaser.Game(config);
 const game_height = game.config.height;
 const game_width = game.config.width;
+
 function create() {
     objectData = this.cache.json.get('levelData');
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -110,8 +111,8 @@ function buildGates(scene){
     gateBkgd = scene.add.sprite(0, 0, 'gates');
     gateBkgd.setOrigin(0);
     gateBkgd.setDisplaySize(
-      600,
-      600,
+      GAME_WIDTH,
+      GAME_HEIGHT,
     );
     for (let index = 0; index < gateData.length; index++) {
       var vertices = gateData[index].shape;
@@ -147,8 +148,8 @@ function buildGates(scene){
         .setSensor(true)
         .setStatic(true)
         .setOrigin(0);
-      objBody.body.label = 'gates';
-//      objBody.setCollisionCategory(cat2);
+      objBody.color = gateData[index].color;
+        objBody.body.label = 'gates';
       polygons.add(poly);
       gateBkgd.setDepth(0);   
       }
@@ -160,7 +161,17 @@ function handleCollision(event){
     if (bodyA.label == 'player' && bodyB.label == 'gates'
       || bodyB.label == 'player' && bodyA.label == 'gates')
       {
-console.log('hit gate');
+        if(bodyA.label == 'gates')
+        {
+         if(bodyA.gameObject.color=='red')
+         {
+          bodyB.gameObject.setTint(0xff0000);
+         }
+         else
+         {
+          bodyB.gameObject.setTint(0x0000ff);
+         }
+        }
         return;
       }
   }

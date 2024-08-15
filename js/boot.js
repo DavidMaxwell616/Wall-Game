@@ -73,3 +73,6 @@ var xScale = 1;
 var yScale = 1;
 var gateBkgd;
 var gateData;
+const PLAYER_SPEED = 5;
+const GAME_WIDTH = 600;
+const GAME_HEIGHT = 600;
