@@ -53,12 +53,12 @@ function create() {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
             wordWrap: { width: 175},
         })
-    player = this.matter.add.sprite(50, 550, 'player').setScale(.8).setAngle(45);
+    player = this.matter.add.sprite(PLAYER_START_X,PLAYER_START_Y, 'player').setScale(.8).setAngle(45);
     player.setCollisionCategory(cat1);
     player.body.label = 'player';
     this.matter.world.on('collisionstart', handleCollision);
     setUpArrows(this);
-
+playerColor=='white';
 }
 
 function buildWalls(scene){
@@ -107,6 +107,7 @@ function buildWalls(scene){
       wallBkgd.setDepth(0);   
       }
 }
+
 function buildGates(scene){
     gateBkgd = scene.add.sprite(0, 0, 'gates');
     gateBkgd.setOrigin(0);
@@ -165,10 +166,26 @@ function handleCollision(event){
         {
          if(bodyA.gameObject.color=='red')
          {
+          if(playerColor=='red')
+          {
+            bodyB.gameObject.setTint(0xffffff);
+            playerColor = 'white';
+            resetPlayer();
+            return;
+          }
+          playerColor = 'red';
           bodyB.gameObject.setTint(0xff0000);
          }
          else
          {
+          if(playerColor=='blue')
+            {
+              bodyB.gameObject.setTint(0xffffff);
+              playerColor = 'white';
+              resetPlayer();
+              return;
+            }
+            playerColor = 'blue';
           bodyB.gameObject.setTint(0x0000ff);
          }
         }
@@ -202,7 +219,11 @@ function update() {
         player.setVelocityY(1);
     }
 }
-
+function resetPlayer()
+{
+  player.x = PLAYER_START_X;
+  player.y = PLAYER_START_Y;
+}
 function setUpArrows(scene) {
     var y = game_height - 10;
     for (let index = 0; index < arrows.length; index++) {
