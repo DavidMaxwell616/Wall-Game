@@ -8,7 +8,7 @@ const config = {
           gravity: {
             y: 0,
           },
-          debug: true,
+          debug: false,
         },
       },
     scene: {
@@ -38,17 +38,13 @@ function create() {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
             wordWrap: { width: 250},
         })
-    scoreText = this.add.text(620, 160, 'SCORE: 0',
+
+    highScoreText = this.add.text(620, 240, 'HIGH SCORE: 0',
         {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
             wordWrap: { width: 250},
         })
-    highScoreText = this.add.text(620, 200, 'HIGH SCORE: 0',
-        {
-            fontFamily: 'Arial', fontSize: 32, color: '#00',
-            wordWrap: { width: 250},
-        })
-    timerText = this.add.text(620, 240, 'TIMER: 0',
+    timerText = this.add.text(620, 200, 'TIMER: 0',
         {
             fontFamily: 'Arial', fontSize: 32, color: '#00',
             wordWrap: { width: 175},
@@ -58,8 +54,10 @@ function create() {
     player.body.label = 'player';
     this.matter.world.on('collisionstart', handleCollision);
     setUpArrows(this);
-playerColor=='white';
-}
+    playerColor=='white';
+    highScore = localStorage.getItem(localStorageName) == null ? 0 :
+    localStorage.getItem(localStorageName);
+  }
 
 function buildWalls(scene){
     wallBkgd = scene.add.sprite(0, 0, 'walls');
@@ -205,24 +203,56 @@ function getRootBody(body) {
 function update() {
     player.setVelocity(0);
 
+    updateScore();  
     if (this.cursors.left.isDown) {
         player.setVelocityX(-1);
+        if(!startTimer) {
+          startTimer = true;
+        startTime = new Date().getTime();
+      }
     }
     else if (this.cursors.right.isDown) {
         player.setVelocityX(1);
+        if(!startTimer) {
+          startTimer = true;
+        startTime = new Date().getTime();
+      }
     }
 
     if (this.cursors.up.isDown) {
         player.setVelocityY(-1);
+        if(!startTimer) {
+          startTimer = true;
+        startTime = new Date().getTime();
+      }
     }
     else if (this.cursors.down.isDown) {
         player.setVelocityY(1);
+        if(!startTimer) {
+          startTimer = true;
+        startTime = new Date().getTime();
+      }
     }
 }
+function updateScore() {
+  highScoreText.setText('High SCORE: ' + highScore);
+  if(startTimer)
+  {
+    var now = new Date().getTime();
+    time = now - startTime;
+  }
+  timerText.setText('TIMER: ' + time);
+}
+
 function resetPlayer()
 {
   player.x = PLAYER_START_X;
   player.y = PLAYER_START_Y;
+  localStorage.setItem(localStorageName, highScore);
+  if (time < highScore)
+    highScore = time;
+  time=0;
+  startTimer = false;
 }
 function setUpArrows(scene) {
     var y = game_height - 10;
