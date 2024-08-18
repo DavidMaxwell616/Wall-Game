@@ -76,6 +76,7 @@ var gateData;
 var playerColor;
 var startTimer = false;
 var startTime;
+var hitExit = false;
 const localStorageName = "Wall Game";
 
 const PLAYER_SPEED = 5;

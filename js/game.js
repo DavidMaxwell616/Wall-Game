@@ -41,13 +41,11 @@ function create() {
 
     highScoreText = this.add.text(620, 240, 'HIGH SCORE: 0',
         {
-            fontFamily: 'Arial', fontSize: 32, color: '#00',
-            wordWrap: { width: 250},
+            fontFamily: 'Arial', fontSize: 32, color: '#00'
         })
     timerText = this.add.text(620, 200, 'TIMER: 0',
         {
-            fontFamily: 'Arial', fontSize: 32, color: '#00',
-            wordWrap: { width: 175},
+            fontFamily: 'Arial', fontSize: 32, color: '#00'
         })
     player = this.matter.add.sprite(PLAYER_START_X,PLAYER_START_Y, 'player').setScale(.8).setAngle(45);
     player.setCollisionCategory(cat1);
@@ -168,6 +166,7 @@ function handleCollision(event){
           {
             bodyB.gameObject.setTint(0xffffff);
             playerColor = 'white';
+            hitExit = false;
             resetPlayer();
             return;
           }
@@ -178,18 +177,28 @@ function handleCollision(event){
          {
           if(playerColor=='blue')
             {
+              console.log('exit');
               bodyB.gameObject.setTint(0xffffff);
               playerColor = 'white';
+              hitExit = true;
               resetPlayer();
               return;
             }
             playerColor = 'blue';
+            if(bodyA.id==24)
+            {
+              playerWon();
+            }
           bodyB.gameObject.setTint(0x0000ff);
          }
         }
         return;
       }
   }
+}
+function playerWon(){
+  console.log('YOU WIN!!')
+resetPlayer();
 }
 function getRootBody(body) {
   if (body.parent === body) {
@@ -249,7 +258,7 @@ function resetPlayer()
   player.x = PLAYER_START_X;
   player.y = PLAYER_START_Y;
   localStorage.setItem(localStorageName, highScore);
-  if (time < highScore)
+  if (hitExit && time < highScore || highScore==0)
     highScore = time;
   time=0;
   startTimer = false;
