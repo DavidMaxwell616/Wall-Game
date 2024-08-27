@@ -77,6 +77,8 @@ var playerColor;
 var startTimer = false;
 var startTime;
 var hitExit = false;
+var playerWon = false;
+var collisions = 0;
 const localStorageName = "Wall Game";
 
 const PLAYER_SPEED = 5;

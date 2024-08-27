@@ -41,63 +41,78 @@
     }],
   "gates": [{
       "shape": [71, 111, 70, 101, 6, 103, 6, 113],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "horizontal"
     },
     {
       "shape": [325, 115, 325, 103, 244, 104, 245, 114],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "horizontal"
     },
     {
       "shape": [442, 240, 440, 141, 431, 141, 431, 240],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "vertical"
     },
     {
       "shape": [213, 86, 224, 85, 222, 8, 213, 8],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "vertical"
     },
     {
       "shape": [198, 107, 135, 109, 135, 119, 198, 117],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "horizontal"
     },
-    {
+     {
       "shape": [117, 241, 115, 144, 103, 143, 105, 242],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "vertical"
     },
     {
       "shape": [235, 244, 230, 138, 221, 138, 224, 243],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "vertical"
     },
     {
       "shape": [124, 416, 135, 414, 130, 314, 121, 315],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "vertical"
     },
     {
       "shape": [96, 444, 96, 434, 8, 432, 8, 439],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "horizontal"
     },
     {
       "shape": [280, 439, 280, 449, 389, 446, 388, 437],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "horizontal"
     },
     {
       "shape": [ 273, 275, 323, 274, 324, 264, 273, 265],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "horizontal"
     },
-    {
+     {
       "shape": [372, 280, 409, 277, 410, 267, 372, 268],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "horizontal"
     },
     {
       "shape": [468, 417, 467, 301, 457, 301, 457, 416],
-      "color" : "blue"
+      "color" : "blue",
+      "direction" : "vertical"
     },
     {
       "shape": [593, 265, 510, 266, 510, 275, 592, 275],
-      "color" : "red"
+      "color" : "red",
+      "direction" : "horizontal"
     },
     {
       "shape": [518, 7 , 520, 79 , 528, 78 , 528, 8],
-      "color": "blue"
+      "color": "blue",
+      "direction" : "verticaal"
     }    
   ]
 }

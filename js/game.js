@@ -8,7 +8,7 @@ const config = {
           gravity: {
             y: 0,
           },
-          debug: false,
+          debug: true,
         },
       },
     scene: {
@@ -53,6 +53,7 @@ function create() {
     this.matter.world.on('collisionstart', handleCollision);
     setUpArrows(this);
     playerColor=='white';
+    localStorage.setItem(localStorageName, 0);
     highScore = localStorage.getItem(localStorageName) == null ? 0 :
     localStorage.getItem(localStorageName);
   }
@@ -151,6 +152,10 @@ function buildGates(scene){
       gateBkgd.setDepth(0);   
       }
 }
+function passThroughGate(){
+
+}
+
 function handleCollision(event){
   for (var i = 0; i < event.pairs.length; i++) {
     var bodyA = getRootBody(event.pairs[i].bodyA);
@@ -177,18 +182,21 @@ function handleCollision(event){
          {
           if(playerColor=='blue')
             {
-              console.log('exit');
-              bodyB.gameObject.setTint(0xffffff);
-              playerColor = 'white';
-              hitExit = true;
-              resetPlayer();
-              return;
+              console.log(bodyA.id);
+              if(bodyA.id==24)
+                {
+                  console.log(hitExit);
+                  hitExit = true;
+                }
+            
+            bodyB.gameObject.setTint(0xffffff);
+            playerColor = 'white';
+            resetPlayer();
+            return;
             }
+        
             playerColor = 'blue';
-            if(bodyA.id==24)
-            {
-              playerWon();
-            }
+            
           bodyB.gameObject.setTint(0x0000ff);
          }
         }
@@ -196,10 +204,7 @@ function handleCollision(event){
       }
   }
 }
-function playerWon(){
-  console.log('YOU WIN!!')
-resetPlayer();
-}
+
 function getRootBody(body) {
   if (body.parent === body) {
     return body;
@@ -253,13 +258,16 @@ function updateScore() {
   timerText.setText('TIMER: ' + time);
 }
 
-function resetPlayer()
+function resetPlayer(gate)
 {
   player.x = PLAYER_START_X;
   player.y = PLAYER_START_Y;
-  localStorage.setItem(localStorageName, highScore);
-  if (hitExit && time < highScore || highScore==0)
+
+   if (hitExit && time < highScore && highScore==0)
+   {
     highScore = time;
+    localStorage.setItem(localStorageName, highScore);
+   }
   time=0;
   startTimer = false;
 }
